@@ -1,0 +1,556 @@
+{% comment %}
+  ==========================================================
+  SAINTS NEWMAN FC — KIT ORDER PORTAL
+  
+  ⬇️  TO CHANGE THE DEADLINE DATE: edit the line below.
+  Just change the date inside the quotes. That's it.
+  ==========================================================
+{% endcomment %}
+
+{% assign deadline = "30 May 2026" %}
+
+{% layout 'theme' %}
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+.sn-portal{--red:#C8102E;--black:#111;--white:#fff;--light:#f5f5f5;--border:#e0e0e0;--muted:#666;--radius:4px;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-family:var(--font);color:var(--black);background:var(--white);line-height:1.5}
+.sn-announce{background:#C8102E;color:white;text-align:center;font-size:.82rem;font-weight:600;padding:9px 1rem}
+.sn-banner{background:#111;color:white;padding:1.75rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.sn-brand{display:flex;align-items:center;gap:14px}
+.sn-crest{width:48px;height:48px;background:#C8102E;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;color:white}
+.sn-title{font-size:1.5rem;font-weight:800;letter-spacing:-0.5px;line-height:1.1}
+.sn-sub{font-size:.75rem;color:#aaa;margin-top:2px;letter-spacing:1.5px;text-transform:uppercase}
+.sn-tag{background:#C8102E;color:white;font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:6px 14px;border-radius:100px}
+.sn-info{display:flex;flex-wrap:wrap;border-bottom:1px solid #e0e0e0}
+.sn-info-item{display:flex;align-items:center;gap:10px;padding:.85rem 1.5rem;border-right:1px solid #e0e0e0;flex:1;min-width:160px}
+.sn-info-icon{width:28px;height:28px;background:#111;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.sn-info-title{font-size:.78rem;font-weight:700}
+.sn-info-sub{font-size:.7rem;color:#666}
+.sn-filters{border-bottom:1px solid #e0e0e0;padding:0 2rem;display:flex;overflow-x:auto}
+.sn-fbtn{background:none;border:none;border-bottom:3px solid transparent;color:#666;font-family:inherit;font-size:.85rem;font-weight:600;padding:1rem 1.1rem;cursor:pointer;white-space:nowrap;transition:all .18s;margin-bottom:-1px}
+.sn-fbtn:hover{color:#111}
+.sn-fbtn.sn-active{color:#111;border-bottom-color:#111}
+.sn-sec-head{padding:1.5rem 2rem .75rem;display:flex;align-items:baseline;justify-content:space-between}
+.sn-sec-head h2{font-size:1.2rem;font-weight:800;letter-spacing:-0.3px}
+.sn-sec-head span{font-size:.8rem;color:#666}
+.sn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.5rem;margin:0 2rem 3rem;min-height:200px}
+.sn-card{background:white;cursor:pointer;border:1px solid #e0e0e0;border-radius:6px;overflow:hidden;transition:box-shadow .2s,transform .18s}
+.sn-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.1);transform:translateY(-2px)}
+.sn-card-img{background:#f5f5f5;height:220px;overflow:hidden;position:relative}
+.sn-card-img img{width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .3s;display:block}
+.sn-card:hover .sn-card-img img{transform:scale(1.04)}
+.sn-card-cta{position:absolute;bottom:0;left:0;right:0;background:rgba(17,17,17,.88);color:white;text-align:center;font-size:.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:9px;transform:translateY(100%);transition:transform .22s}
+.sn-card:hover .sn-card-cta{transform:translateY(0)}
+.sn-nn-badge{position:absolute;top:10px;left:10px;background:#111;color:white;font-size:.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:2px;z-index:2}
+.sn-card-body{padding:.9rem 1.1rem 1.1rem}
+.sn-card-cat{font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C8102E;margin-bottom:3px}
+.sn-card-name{font-size:.95rem;font-weight:800;margin-bottom:3px;line-height:1.2}
+.sn-card-desc{font-size:.78rem;color:#666;margin-bottom:9px}
+.sn-card-foot{display:flex;align-items:center;justify-content:space-between}
+.sn-card-price{font-size:1rem;font-weight:800}
+.sn-loading-grid{grid-column:1/-1;text-align:center;padding:3rem 1rem;color:#666;font-size:.9rem}
+.sn-spinner{display:inline-block;width:24px;height:24px;border:3px solid #e0e0e0;border-top-color:#111;border-radius:50%;animation:snSpin .7s linear infinite;margin-bottom:10px}
+@keyframes snSpin{to{transform:rotate(360deg)}}
+.sn-modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99999;overflow-y:auto;padding:1.5rem 1rem}
+.sn-modal-ov.sn-open{display:block}
+.sn-modal-wrap{max-width:700px;margin:0 auto}
+.sn-modal{background:white;width:100%;border-radius:8px;overflow:hidden;position:relative;animation:snMIn .22s ease;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+@keyframes snMIn{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
+.sn-mcls{position:absolute;top:.9rem;right:.9rem;width:34px;height:34px;background:#f5f5f5;border:1px solid #e0e0e0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;z-index:5;color:#111;font-weight:700;line-height:1}
+.sn-mcls:hover{background:#e0e0e0}
+.sn-modal-img{background:#f5f5f5;height:250px;overflow:hidden}
+.sn-modal-img img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+.sn-modal-body{padding:1.4rem}
+.sn-m-cat{font-size:.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#C8102E;margin-bottom:3px}
+.sn-m-title{font-size:1.35rem;font-weight:800;letter-spacing:-0.3px;margin-bottom:5px}
+.sn-m-fabric{font-size:.85rem;color:#333;padding-bottom:1rem;border-bottom:1px solid #e0e0e0;margin-bottom:1rem;line-height:1.6}
+.sn-m-fabric p{margin-bottom:.5rem}
+.sn-m-price{font-size:1.5rem;font-weight:800;margin-bottom:1.2rem}
+.sn-field-label{font-size:.72rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;display:block}
+.sn-size-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.sn-size-group-label{width:100%;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#666;margin-bottom:2px;margin-top:6px}
+.sn-size-btn{background:white;border:1.5px solid #e0e0e0;border-radius:4px;font-family:inherit;font-size:.82rem;font-weight:600;color:#111;padding:7px 12px;cursor:pointer;transition:all .15s;min-width:52px;text-align:center}
+.sn-size-btn:hover:not(:disabled){border-color:#111}
+.sn-size-btn.sn-selected{background:#111;color:white;border-color:#111}
+.sn-size-btn:disabled{opacity:.4;cursor:not-allowed;text-decoration:line-through}
+.sn-err{color:#C8102E;font-size:.75rem;font-weight:600;margin-top:4px;min-height:18px}
+.sn-qty-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;margin-top:14px}
+.sn-qty-btn{width:34px;height:34px;background:#f5f5f5;border:1.5px solid #e0e0e0;border-radius:4px;font-size:1.1rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#111;transition:background .15s;font-family:inherit}
+.sn-qty-btn:hover{background:#e0e0e0}
+.sn-qty-val{font-size:1rem;font-weight:700;min-width:28px;text-align:center}
+.sn-nn-block{border:1.5px solid #e0e0e0;border-radius:4px;padding:1rem;margin-bottom:14px;background:#f5f5f5}
+.sn-nn-hdr{display:flex;align-items:center;gap:10px;margin-bottom:.8rem}
+.sn-nn-icon{width:28px;height:28px;background:#111;color:white;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.sn-nn-title{font-size:.85rem;font-weight:800}
+.sn-nn-sub{font-size:.72rem;color:#666}
+.sn-nn-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sn-input{width:100%;border:1.5px solid #e0e0e0;border-radius:4px;background:white;font-family:inherit;font-size:.88rem;color:#111;padding:9px 11px;outline:none;transition:border-color .15s}
+.sn-input:focus{border-color:#111}
+.sn-hint{font-size:.7rem;color:#666;margin-top:3px}
+.sn-preview{display:none;background:#111;color:white;border-radius:4px;padding:9px 13px;margin-top:8px;align-items:center;gap:10px}
+.sn-preview.sn-on{display:flex}
+.sn-prev-lbl{font-size:.68rem;letter-spacing:1px;text-transform:uppercase;color:#888;flex-shrink:0}
+.sn-prev-name{font-size:.95rem;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.sn-prev-num{margin-left:auto;background:#C8102E;color:white;font-size:.95rem;font-weight:800;padding:3px 11px;border-radius:4px}
+.sn-add-btn{width:100%;background:#111;color:white;border:none;border-radius:4px;font-family:inherit;font-size:.92rem;font-weight:700;padding:14px;cursor:pointer;transition:background .18s;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:.9rem}
+.sn-add-btn:hover{background:#333}
+.sn-add-btn:disabled{background:#999;cursor:wait}
+.sn-cart-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99998}
+.sn-cart-ov.sn-open{display:block}
+.sn-cart-panel{display:none;position:fixed;top:0;right:0;bottom:0;width:380px;background:white;border-left:1px solid #e0e0e0;z-index:99999;flex-direction:column;box-shadow:-4px 0 20px rgba(0,0,0,.1);animation:snSIn .22s ease}
+@keyframes snSIn{from{transform:translateX(100%)}to{transform:none}}
+.sn-cart-panel.sn-open{display:flex}
+.sn-cart-hdr{padding:1.1rem 1.4rem;border-bottom:1px solid #e0e0e0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.sn-cart-hdr h3{font-size:1.05rem;font-weight:800}
+.sn-cart-body{flex:1;overflow-y:auto;padding:.9rem 1.4rem}
+.sn-cart-ftr{padding:1.1rem 1.4rem;border-top:1px solid #e0e0e0;flex-shrink:0}
+.sn-ci{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:.85rem 0;border-bottom:1px solid #e0e0e0;align-items:start}
+.sn-ci-name{font-weight:700;font-size:.85rem;grid-column:1}
+.sn-ci-meta{font-size:.75rem;color:#666;grid-column:1}
+.sn-ci-nn{font-size:.75rem;color:#C8102E;font-weight:600;grid-column:1}
+.sn-ci-price{font-size:.9rem;font-weight:800;grid-column:2;grid-row:1/3;align-self:center;text-align:right}
+.sn-ci-rm{grid-column:1;background:none;border:none;font-size:.72rem;color:#666;cursor:pointer;padding:0;text-align:left;margin-top:3px;text-decoration:underline;font-family:inherit}
+.sn-ci-rm:hover{color:#C8102E}
+.sn-cart-total{display:flex;justify-content:space-between;font-size:.95rem;font-weight:800;margin-bottom:.85rem}
+.sn-chk-btn{width:100%;background:#C8102E;color:white;border:none;border-radius:4px;font-family:inherit;font-size:.95rem;font-weight:700;padding:14px;cursor:pointer;transition:background .18s;display:flex;align-items:center;justify-content:center;gap:8px}
+.sn-chk-btn:hover{background:#a80000}
+.sn-chk-btn:disabled{background:#999;cursor:wait}
+.sn-cart-empty{text-align:center;padding:2rem 0;color:#666;font-size:.85rem}
+.sn-sticky{position:fixed;bottom:1.5rem;left:1.5rem;right:auto;transform:none;background:#C8102E;color:white;border:3px solid white;border-radius:100px;padding:16px 28px;font-family:inherit;font-size:1rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:10px;box-shadow:0 6px 24px rgba(0,0,0,.4);z-index:2147483647;transition:background .18s;white-space:nowrap;text-transform:uppercase;letter-spacing:.5px}
+.sn-sticky:hover{background:#333}
+.sn-sticky-badge{background:#C8102E;color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+.sn-toast{position:fixed;bottom:9rem;left:50%;transform:translateX(-50%) translateY(55px);background:#111;color:white;font-size:.82rem;font-weight:600;padding:10px 24px;border-radius:100px;z-index:999999;transition:transform .25s;white-space:nowrap;pointer-events:none;max-width:90vw;text-align:center}
+.sn-toast.sn-show{transform:translateX(-50%) translateY(0)}
+.sn-loading{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:snSpin .7s linear infinite}
+@media(max-width:640px){.sn-grid{margin:0 1rem 2rem;gap:1rem}.sn-filters,.sn-sec-head{padding-left:1rem;padding-right:1rem}.sn-banner{padding:1.25rem 1rem}.sn-cart-panel{width:100%}.sn-nn-fields{grid-template-columns:1fr}.sn-info-item{min-width:140px}.sn-sticky{font-size:.78rem;padding:10px 18px}}
+</style>
+
+<div class="sn-portal">
+
+<div class="sn-announce">🏈 2026 Season Kit Orders — Deadline: {{ deadline }} · Full Sublimation · AKS Print</div>
+
+<div class="sn-banner">
+  <div class="sn-brand">
+    <div class="sn-crest">SN</div>
+    <div>
+      <div class="sn-title">Saints Newman FC</div>
+      <div class="sn-sub">Official Kit Order Portal · NNFL 2026</div>
+    </div>
+  </div>
+  <div class="sn-tag">AKS Custom Apparel</div>
+</div>
+
+<div class="sn-info">
+  <div class="sn-info-item"><div class="sn-info-icon">✦</div><div><div class="sn-info-title">Custom Name &amp; Number</div><div class="sn-info-sub">Personalised per player</div></div></div>
+  <div class="sn-info-item"><div class="sn-info-icon">📦</div><div><div class="sn-info-title">Bulk Order Discounts</div><div class="sn-info-sub">Contact AKS for club pricing</div></div></div>
+  <div class="sn-info-item"><div class="sn-info-icon">📅</div><div><div class="sn-info-title">Order Deadline</div><div class="sn-info-sub">{{ deadline }}</div></div></div>
+  <div class="sn-info-item"><div class="sn-info-icon">🖨</div><div><div class="sn-info-title">Full Sublimation</div><div class="sn-info-sub">PMC &amp; Bullet fabric</div></div></div>
+</div>
+
+<div class="sn-filters">
+  <button type="button" class="sn-fbtn sn-active" data-filter="all">All Items</button>
+  <button type="button" class="sn-fbtn" data-filter="singlet">Game Singlets</button>
+  <button type="button" class="sn-fbtn" data-filter="training">Training Shirts</button>
+  <button type="button" class="sn-fbtn" data-filter="womens">Women's</button>
+  <button type="button" class="sn-fbtn" data-filter="kids">Kids</button>
+</div>
+
+<div class="sn-sec-head">
+  <h2 id="snSecTitle">2026 Season Collection</h2>
+  <span id="snSecCount"></span>
+</div>
+
+<div class="sn-grid" id="snGrid">
+  <div class="sn-loading-grid"><div class="sn-spinner"></div><br>Loading products...</div>
+</div>
+
+<div class="sn-modal-ov" id="snModalOv">
+  <div class="sn-modal-wrap">
+    <div class="sn-modal">
+      <button type="button" class="sn-mcls" id="snMClose">✕</button>
+      <div class="sn-modal-img"><img id="snMImg" src="" alt=""></div>
+      <div class="sn-modal-body">
+        <div class="sn-m-cat" id="snMCat"></div>
+        <div class="sn-m-title" id="snMTitle"></div>
+        <div class="sn-m-fabric" id="snMFabric"></div>
+        <div class="sn-m-price" id="snMPrice"></div>
+        <span class="sn-field-label">Size</span>
+        <div class="sn-size-grid" id="snSizeGrid"></div>
+        <div class="sn-err" id="snSizeErr"></div>
+        <div>
+          <span class="sn-field-label">Quantity</span>
+          <div class="sn-qty-row">
+            <button type="button" class="sn-qty-btn" id="snQtyMinus">−</button>
+            <span class="sn-qty-val" id="snQtyVal">1</span>
+            <button type="button" class="sn-qty-btn" id="snQtyPlus">+</button>
+          </div>
+        </div>
+        <div class="sn-nn-block" id="snNNBlock">
+          <div class="sn-nn-hdr">
+            <div class="sn-nn-icon">✦</div>
+            <div><div class="sn-nn-title">Custom Name &amp; Number</div><div class="sn-nn-sub">Printed on the back of your garment</div></div>
+          </div>
+          <div class="sn-nn-fields">
+            <div>
+              <label class="sn-field-label">Player Name</label>
+              <input type="text" class="sn-input" id="snPName" placeholder="e.g. HUTCHINSON" maxlength="14">
+              <div class="sn-hint" id="snNameHint">0 / 14 characters</div>
+            </div>
+            <div>
+              <label class="sn-field-label">Player Number</label>
+              <input type="number" class="sn-input" id="snPNum" placeholder="e.g. 26" min="1" max="99">
+              <div class="sn-hint">1 – 99</div>
+            </div>
+          </div>
+          <div class="sn-err" id="snNNErr"></div>
+          <div class="sn-preview" id="snPreview">
+            <span class="sn-prev-lbl">Preview</span>
+            <span class="sn-prev-name" id="snPrevName"></span>
+            <span class="sn-prev-num" id="snPrevNum"></span>
+          </div>
+        </div>
+        <button type="button" class="sn-add-btn" id="snAddBtn">Add to Order</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="sn-cart-ov" id="snCartOv"></div>
+<div class="sn-cart-panel" id="snCartPanel">
+  <div class="sn-cart-hdr">
+    <h3>Your Order</h3>
+    <button type="button" class="sn-mcls" id="snCartClose" style="position:relative;top:0;right:0">✕</button>
+  </div>
+  <div class="sn-cart-body" id="snCartBody"></div>
+  <div class="sn-cart-ftr">
+    <div class="sn-cart-total"><span>Total</span><span id="snCartTotal">$0.00</span></div>
+    <button type="button" class="sn-chk-btn" id="snChkBtn">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<button type="button" class="sn-sticky" id="snSticky">View Order <span class="sn-sticky-badge" id="snBadge">0</span></button>
+
+<div class="sn-toast" id="snToast"></div>
+
+</div>
+
+<script>
+(function(){
+
+const PRODUCT_CONFIG = [
+  { handle: "v-neck-singlet-black",                cat: "singlet",  age: "adult", hasNN: true,  tag: "Game Day Singlet" },
+  { handle: "v-neck-singlet-black-kids",           cat: "singlet",  age: "kids",  hasNN: true,  tag: "Game Day Singlet" },
+  { handle: "v-neck-singlet-red",                  cat: "singlet",  age: "adult", hasNN: true,  tag: "Game Day Singlet" },
+  { handle: "v-neck-singlet-red-kids",             cat: "singlet",  age: "kids",  hasNN: true,  tag: "Game Day Singlet" },
+  { handle: "training-shirt-red",                  cat: "training", age: "adult", hasNN: true,  tag: "Training Shirt" },
+  { handle: "training-shirt-red-kids",             cat: "training", age: "kids",  hasNN: true,  tag: "Training Shirt" },
+  { handle: "training-shirt-black",                cat: "training", age: "adult", hasNN: true,  tag: "Training Shirt" },
+  { handle: "training-shirt-black-kids",           cat: "training", age: "kids",  hasNN: true,  tag: "Training Shirt" },
+  { handle: "training-shirt-cross-design",         cat: "training", age: "adult", hasNN: false, tag: "Training Shirt" },
+  { handle: "training-shirt-cross-design-kids",    cat: "training", age: "kids",  hasNN: false, tag: "Training Shirt" },
+  { handle: "training-shirt-sponsor-edition",      cat: "training", age: "adult", hasNN: false, tag: "Polo Shirt" },
+  { handle: "training-shirt-sponsor-edition-kids", cat: "training", age: "kids",  hasNN: false, tag: "Polo Shirt" },
+  { handle: "womens-cut-singlet",                  cat: "womens",   age: "adult", hasNN: false, tag: "Women's Singlet" },
+];
+
+let products=[],cart=[],current=null,activeFilter="all",selectedVariantId=null,selectedSize="",qty=1;
+
+function snParseVariantTitle(title){
+  if(!title || title === "Default Title") return {group:"", size:title||""};
+  const m = title.match(/^(Adult|Kids|Womens)\s+(.+)$/i);
+  if(m) return {group: m[1], size: m[2]};
+  return {group:"", size:title};
+}
+
+function snShortDesc(text){
+  if(!text) return "";
+  text = text.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+  if(text.length <= 60) return text;
+  return text.substring(0,57).trim()+"...";
+}
+
+async function snLoadProducts(){
+  const promises = PRODUCT_CONFIG.map(cfg =>
+    fetch('/products/'+cfg.handle+'.js', {headers:{'Accept':'application/json'}})
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if(!data) return null;
+        return {
+          handle: cfg.handle, cat: cfg.cat, age: cfg.age, hasNN: cfg.hasNN, tag: cfg.tag,
+          title: data.title,
+          description: data.description,
+          bodyHtml: data.body_html || data.description,
+          price: data.price/100,
+          image: data.featured_image || (data.images && data.images[0]) || "",
+          variants: data.variants.map(v => ({
+            id: v.id, title: v.title, available: v.available, price: v.price/100,
+            ...snParseVariantTitle(v.title)
+          }))
+        };
+      })
+      .catch(()=>null)
+  );
+  const results = await Promise.all(promises);
+  products = results.filter(p => p !== null);
+  console.log('Loaded '+products.length+' products');
+  if(products.length === 0){
+    document.getElementById("snGrid").innerHTML = '<div class="sn-loading-grid">Could not load products. Make sure all products are published to your Online Store.</div>';
+    return;
+  }
+  snRenderGrid();
+}
+
+function snRenderGrid(){
+  let items;
+  if(activeFilter === "all") items = products;
+  else if(activeFilter === "kids") items = products.filter(p => p.age === "kids");
+  else items = products.filter(p => p.cat === activeFilter);
+  document.getElementById("snSecCount").textContent = items.length+" item"+(items.length!==1?"s":"");
+  if(!items.length){
+    document.getElementById("snGrid").innerHTML = '<div class="sn-loading-grid">No products in this category.</div>';
+    return;
+  }
+  const grid = document.getElementById("snGrid");
+  grid.innerHTML = "";
+  items.forEach(p => {
+    const desc = snShortDesc(p.description);
+    const card = document.createElement("div");
+    card.className = "sn-card";
+    card.innerHTML =
+      '<div class="sn-card-img">'+
+        (p.hasNN?'<div class="sn-nn-badge">Custom Name &amp; #</div>':'')+
+        '<img src="'+p.image+'" alt="" loading="lazy">'+
+        '<div class="sn-card-cta">Quick Order →</div>'+
+      '</div>'+
+      '<div class="sn-card-body">'+
+        '<div class="sn-card-cat">'+p.tag+'</div>'+
+        '<div class="sn-card-name"></div>'+
+        '<div class="sn-card-desc">'+(desc||'&nbsp;')+'</div>'+
+        '<div class="sn-card-foot"><div></div><div class="sn-card-price">$'+p.price.toFixed(2)+'</div></div>'+
+      '</div>';
+    card.querySelector('.sn-card-name').textContent = p.title;
+    card.addEventListener('click', ()=>snOpenModal(p.handle));
+    grid.appendChild(card);
+  });
+}
+
+function snFilter(cat, btn){
+  activeFilter = cat;
+  document.querySelectorAll(".sn-fbtn").forEach(b=>b.classList.remove("sn-active"));
+  btn.classList.add("sn-active");
+  const labels={all:"2026 Season Collection",singlet:"Game Day Singlets",training:"Training Shirts",womens:"Women's Collection",kids:"Kids Collection"};
+  document.getElementById("snSecTitle").textContent = labels[cat];
+  snRenderGrid();
+}
+
+function snRenderSizes(p){
+  const groups = {};
+  p.variants.forEach(v => {
+    const key = v.group || "Size";
+    if(!groups[key]) groups[key] = [];
+    groups[key].push(v);
+  });
+  const grid = document.getElementById("snSizeGrid");
+  grid.innerHTML = "";
+  const order = ["Adult","Womens","Kids"];
+  const orderedKeys = [...order.filter(k=>groups[k]), ...Object.keys(groups).filter(k=>!order.includes(k))];
+  orderedKeys.forEach(key => {
+    if(p.variants.length>1 || groups[key][0].group){
+      const lbl = document.createElement("div");
+      lbl.className = "sn-size-group-label";
+      lbl.textContent = key;
+      grid.appendChild(lbl);
+    }
+    groups[key].forEach(v=>{
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "sn-size-btn";
+      btn.textContent = v.size || v.title;
+      if(!v.available){btn.disabled=true;btn.title="Sold out";}
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll(".sn-size-btn").forEach(b=>b.classList.remove("sn-selected"));
+        btn.classList.add("sn-selected");
+        selectedVariantId = v.id;
+        selectedSize = (v.group?v.group+' ':'')+(v.size||v.title);
+        document.getElementById("snSizeErr").textContent = "";
+      });
+      grid.appendChild(btn);
+    });
+  });
+  selectedVariantId=null; selectedSize="";
+}
+
+function snOpenModal(handle){
+  const p = products.find(x=>x.handle===handle);
+  if(!p) return;
+  current=p; selectedVariantId=null; selectedSize=""; qty=1;
+  document.getElementById("snMImg").src = p.image;
+  document.getElementById("snMCat").textContent = p.tag;
+  document.getElementById("snMTitle").textContent = p.title;
+  document.getElementById("snMFabric").innerHTML = p.bodyHtml||"";
+  document.getElementById("snMPrice").textContent = "$"+p.price.toFixed(2);
+  document.getElementById("snQtyVal").textContent = "1";
+  document.getElementById("snSizeErr").textContent = "";
+  document.getElementById("snNNErr").textContent = "";
+  snRenderSizes(p);
+  document.getElementById("snNNBlock").style.display = p.hasNN?"block":"none";
+  document.getElementById("snPName").value = "";
+  document.getElementById("snPNum").value = "";
+  document.getElementById("snNameHint").textContent = "0 / 14 characters";
+  document.getElementById("snPreview").classList.remove("sn-on");
+  document.getElementById("snModalOv").classList.add("sn-open");
+  document.body.style.overflow = "hidden";
+}
+
+function snCloseModal(){
+  document.getElementById("snModalOv").classList.remove("sn-open");
+  document.body.style.overflow = "";
+}
+
+function snUpdatePreview(){
+  const name = document.getElementById("snPName").value.toUpperCase();
+  const num = document.getElementById("snPNum").value;
+  document.getElementById("snNameHint").textContent = name.length+" / 14 characters";
+  const p = document.getElementById("snPreview");
+  if(name||num){
+    document.getElementById("snPrevName").textContent = name||"—";
+    document.getElementById("snPrevNum").textContent = num?"#"+num:"";
+    p.classList.add("sn-on");
+  } else p.classList.remove("sn-on");
+}
+
+async function snAddToCart(){
+  const p = current;
+  if(!selectedVariantId){document.getElementById("snSizeErr").textContent="Please select a size";return;}
+  const name = p.hasNN?document.getElementById("snPName").value.toUpperCase().trim():"";
+  const num = p.hasNN?document.getElementById("snPNum").value.trim():"";
+  if(p.hasNN&&!name){document.getElementById("snNNErr").textContent="Please enter a player name";return;}
+  if(p.hasNN&&!num){document.getElementById("snNNErr").textContent="Please enter a player number";return;}
+  document.getElementById("snNNErr").textContent = "";
+  const properties = {};
+  if(p.hasNN){properties["Player Name"]=name;properties["Player Number"]=num;}
+  const btn = document.getElementById("snAddBtn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="sn-loading"></span> Adding...';
+  try {
+    const res = await fetch("/cart/add.js", {
+      method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"},
+      body: JSON.stringify({items:[{id:selectedVariantId, quantity:qty, properties:properties}]})
+    });
+    if(!res.ok){
+      const err = await res.json().catch(()=>({}));
+      throw new Error(err.description||err.message||"Failed to add to cart");
+    }
+    snCloseModal();
+    await snRefreshCart();
+    document.getElementById("snCartPanel").classList.add("sn-open");
+    document.getElementById("snCartOv").classList.add("sn-open");
+    snShowToast("Added to order!");
+  } catch(e) {
+    snShowToast("Could not add to cart: "+e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Add to Order";
+  }
+}
+
+async function snRefreshCart(){
+  try {
+    const res = await fetch("/cart.js", {headers:{'Accept':'application/json'}});
+    if(!res.ok) throw new Error("Cart fetch failed");
+    const data = await res.json();
+    cart = data.items.map(i => ({
+      key: i.key, name: i.product_title,
+      size: (i.variant_options && i.variant_options[0]) || i.variant_title || "",
+      qty: i.quantity, price: i.price/100, linePrice: i.line_price/100,
+      properties: i.properties || {}
+    }));
+    snRenderCart();
+  } catch(e){console.error("Cart refresh failed", e);}
+}
+
+function snRenderCart(){
+  const total = cart.reduce((a,i)=>a+i.linePrice,0);
+  const totalQty = cart.reduce((a,i)=>a+i.qty,0);
+  document.getElementById("snBadge").textContent = totalQty;
+  document.getElementById("snCartTotal").textContent = "$"+total.toFixed(2);
+  const body = document.getElementById("snCartBody");
+  if(!cart.length){
+    body.innerHTML = '<div class="sn-cart-empty">No items yet.<br>Browse the collection above.</div>';
+    return;
+  }
+  body.innerHTML = "";
+  cart.forEach(i => {
+    const pn = i.properties["Player Name"];
+    const pNum = i.properties["Player Number"];
+    const div = document.createElement("div");
+    div.className = "sn-ci";
+    div.innerHTML =
+      '<div class="sn-ci-name"></div>'+
+      '<div class="sn-ci-meta">Size: '+i.size+' · Qty: '+i.qty+'</div>'+
+      (pn?'<div class="sn-ci-nn">Name: '+pn+' · #'+(pNum||"")+'</div>':'')+
+      '<div class="sn-ci-price">$'+i.linePrice.toFixed(2)+'</div>'+
+      '<button type="button" class="sn-ci-rm">Remove</button>';
+    div.querySelector('.sn-ci-name').textContent = i.name;
+    div.querySelector('.sn-ci-rm').addEventListener('click', ()=>snRemoveItem(i.key));
+    body.appendChild(div);
+  });
+}
+
+async function snRemoveItem(key){
+  try {
+    await fetch("/cart/change.js", {
+      method:"POST", headers:{"Content-Type":"application/json","Accept":"application/json"},
+      body: JSON.stringify({id:key, quantity:0})
+    });
+    await snRefreshCart();
+  } catch(e){snShowToast("Could not remove item");}
+}
+
+function snToggleCart(){
+  document.getElementById("snCartPanel").classList.toggle("sn-open");
+  document.getElementById("snCartOv").classList.toggle("sn-open");
+}
+
+let snTT;
+function snShowToast(msg){
+  const t = document.getElementById("snToast");
+  t.textContent = msg;
+  t.classList.add("sn-show");
+  clearTimeout(snTT);
+  snTT = setTimeout(()=>t.classList.remove("sn-show"), 2800);
+}
+
+// Wire up event listeners
+document.querySelectorAll('.sn-fbtn').forEach(btn => {
+  btn.addEventListener('click', ()=>snFilter(btn.dataset.filter, btn));
+});
+document.getElementById('snMClose').addEventListener('click', snCloseModal);
+document.getElementById('snModalOv').addEventListener('click', e=>{
+  if(e.target.id==='snModalOv') snCloseModal();
+});
+document.getElementById('snQtyMinus').addEventListener('click', ()=>{
+  qty=Math.max(1,Math.min(20,qty-1));
+  document.getElementById("snQtyVal").textContent=qty;
+});
+document.getElementById('snQtyPlus').addEventListener('click', ()=>{
+  qty=Math.max(1,Math.min(20,qty+1));
+  document.getElementById("snQtyVal").textContent=qty;
+});
+document.getElementById('snPName').addEventListener('input', snUpdatePreview);
+document.getElementById('snPNum').addEventListener('input', snUpdatePreview);
+document.getElementById('snAddBtn').addEventListener('click', snAddToCart);
+document.getElementById('snCartClose').addEventListener('click', snToggleCart);
+document.getElementById('snCartOv').addEventListener('click', snToggleCart);
+document.getElementById('snSticky').addEventListener('click', snToggleCart);
+document.getElementById('snChkBtn').addEventListener('click', ()=>{
+  if(!cart.length){snShowToast("Your order is empty");return;}
+  const btn = document.getElementById("snChkBtn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="sn-loading"></span> Redirecting...';
+  window.location.href = "/checkout";
+});
+
+snLoadProducts().then(()=>snRefreshCart());
+})();
+</script>
