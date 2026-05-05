@@ -1,0 +1,156 @@
+{% doc %}
+  @prompt
+    Add a static "Add to Cart" button that appears below the product title and price on collection/product grid cards. The button should be full-width, yellow background (#ffd700) with black text, and display "ADD TO CART" in bold. For sold out/out of stock products, show a grey "OUT OF STOCK" button that is disabled. The button should always be visible (not a hover overlay on the image) and sit beneath the product info section of each product card., add to cart should show under the product image. on the collection page. 
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-product-card-button-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+  }
+
+  .ai-product-card-button__btn-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    padding: 12px 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: {{ block.settings.button_font_size }}px;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    transition: opacity 0.2s ease;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .ai-product-card-button__btn-{{ ai_gen_id }}:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  .ai-product-card-button__btn-{{ ai_gen_id }}--in-stock {
+    background-color: {{ block.settings.button_background_color }};
+    color: {{ block.settings.button_text_color }};
+  }
+
+  .ai-product-card-button__btn-{{ ai_gen_id }}--out-of-stock {
+    background-color: {{ block.settings.out_of_stock_background_color }};
+    color: {{ block.settings.out_of_stock_text_color }};
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+{% endstyle %}
+
+<div class="ai-product-card-button-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if product.available %}
+    {% if product.has_only_default_variant %}
+      <form action="/cart/add" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+        <button
+          type="submit"
+          class="ai-product-card-button__btn-{{ ai_gen_id }} ai-product-card-button__btn-{{ ai_gen_id }}--in-stock"
+          {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %}
+        >
+          {{ block.settings.button_text }}
+        </button>
+      </form>
+    {% else %}
+      <a
+        href="{{ product.url }}"
+        class="ai-product-card-button__btn-{{ ai_gen_id }} ai-product-card-button__btn-{{ ai_gen_id }}--in-stock"
+      >
+        {{ block.settings.button_text }}
+      </a>
+    {% endif %}
+  {% else %}
+    <button
+      type="button"
+      class="ai-product-card-button__btn-{{ ai_gen_id }} ai-product-card-button__btn-{{ ai_gen_id }}--out-of-stock"
+      disabled
+    >
+      {{ block.settings.out_of_stock_text }}
+    </button>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Product card button",
+  "settings": [
+    {
+      "type": "header",
+      "content": "In stock button"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "ADD TO CART"
+    },
+    {
+      "type": "color",
+      "id": "button_background_color",
+      "label": "Background color",
+      "default": "#ffd700"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Out of stock button"
+    },
+    {
+      "type": "text",
+      "id": "out_of_stock_text",
+      "label": "Button text",
+      "default": "OUT OF STOCK"
+    },
+    {
+      "type": "color",
+      "id": "out_of_stock_background_color",
+      "label": "Background color",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "out_of_stock_text_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product card button"
+    }
+  ]
+}
+{% endschema %}

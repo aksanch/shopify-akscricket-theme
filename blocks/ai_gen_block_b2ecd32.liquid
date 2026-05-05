@@ -1,0 +1,488 @@
+{% doc %}
+  @prompt
+    Modify the product card layout in the Product Grid section so that the "Add to Cart" button is always visible and positioned below the product image, title, and price - not as a hover overlay on the image. The button should be full-width, yellow background (#ffd700) with black bold text saying "ADD TO CART". For sold out products, show a disabled grey "OUT OF STOCK" button instead.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-product-card-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    background-color: {{ block.settings.card_background_color }};
+    border-radius: {{ block.settings.card_border_radius }}px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .ai-product-card-container-{{ ai_gen_id }} {
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+  }
+
+  .ai-product-card-image-wrapper-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    overflow: hidden;
+    background-color: #f4f4f4;
+  }
+
+  .ai-product-card-image-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-product-card-badge-{{ ai_gen_id }} {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    z-index: 1;
+  }
+
+  .ai-product-card-badge-sale-{{ ai_gen_id }} {
+    background-color: {{ block.settings.sale_badge_color }};
+    color: #ffffff;
+  }
+
+  .ai-product-card-badge-soldout-{{ ai_gen_id }} {
+    background-color: {{ block.settings.soldout_badge_color }};
+    color: #ffffff;
+  }
+
+  .ai-product-card-content-{{ ai_gen_id }} {
+    padding: {{ block.settings.card_padding }}px;
+  }
+
+  .ai-product-card-vendor-{{ ai_gen_id }} {
+    font-size: 12px;
+    color: {{ block.settings.vendor_color }};
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .ai-product-card-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    font-weight: 600;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+  }
+
+  .ai-product-card-price-{{ ai_gen_id }} {
+    font-size: {{ block.settings.price_size }}px;
+    font-weight: 700;
+    color: {{ block.settings.price_color }};
+    margin-bottom: 12px;
+  }
+
+  .ai-product-card-price-compare-{{ ai_gen_id }} {
+    text-decoration: line-through;
+    opacity: 0.6;
+    margin-right: 8px;
+  }
+
+  .ai-product-card-button-{{ ai_gen_id }} {
+    width: 100%;
+    padding: 14px 20px;
+    border: none;
+    border-radius: {{ block.settings.button_border_radius }}px;
+    font-size: {{ block.settings.button_text_size }}px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+
+  .ai-product-card-button-available-{{ ai_gen_id }} {
+    background-color: {{ block.settings.button_background_color }};
+    color: {{ block.settings.button_text_color }};
+  }
+
+  .ai-product-card-button-available-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .ai-product-card-button-soldout-{{ ai_gen_id }} {
+    background-color: {{ block.settings.soldout_button_color }};
+    color: {{ block.settings.soldout_button_text_color }};
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+
+  .ai-product-card-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f4f4f4;
+  }
+
+  .ai-product-card-placeholder-{{ ai_gen_id }} svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.3;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-product-card-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.9 }}px;
+    }
+
+    .ai-product-card-price-{{ ai_gen_id }} {
+      font-size: {{ block.settings.price_size | times: 0.9 }}px;
+    }
+
+    .ai-product-card-button-{{ ai_gen_id }} {
+      padding: 12px 16px;
+      font-size: {{ block.settings.button_text_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-product-card-container-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  {% if block.settings.product != blank %}
+    {% assign product = block.settings.product %}
+    {% assign current_variant = product.selected_or_first_available_variant %}
+    {% assign on_sale = false %}
+    {% if current_variant.compare_at_price > current_variant.price %}
+      {% assign on_sale = true %}
+    {% endif %}
+
+    <div class="ai-product-card-{{ ai_gen_id }}">
+      <div class="ai-product-card-image-wrapper-{{ ai_gen_id }}">
+        {% if product.featured_image %}
+          <img
+            src="{{ product.featured_image | image_url: width: 800 }}"
+            alt="{{ product.featured_image.alt | escape }}"
+            class="ai-product-card-image-{{ ai_gen_id }}"
+            loading="lazy"
+            width="800"
+            height="800"
+          >
+        {% else %}
+          <div class="ai-product-card-placeholder-{{ ai_gen_id }}">
+            {{ 'product-1' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+
+        {% if block.settings.show_badges %}
+          {% if product.available == false %}
+            <div class="ai-product-card-badge-{{ ai_gen_id }} ai-product-card-badge-soldout-{{ ai_gen_id }}">
+              Sold Out
+            </div>
+          {% elsif on_sale %}
+            <div class="ai-product-card-badge-{{ ai_gen_id }} ai-product-card-badge-sale-{{ ai_gen_id }}">
+              Sale
+            </div>
+          {% endif %}
+        {% endif %}
+      </div>
+
+      <div class="ai-product-card-content-{{ ai_gen_id }}">
+        {% if block.settings.show_vendor and product.vendor != blank %}
+          <div class="ai-product-card-vendor-{{ ai_gen_id }}">
+            {{ product.vendor }}
+          </div>
+        {% endif %}
+
+        <h3 class="ai-product-card-title-{{ ai_gen_id }}">
+          <a href="{{ product.url }}" style="text-decoration: none; color: inherit;">
+            {{ product.title }}
+          </a>
+        </h3>
+
+        <div class="ai-product-card-price-{{ ai_gen_id }}">
+          {% if on_sale %}
+            <span class="ai-product-card-price-compare-{{ ai_gen_id }}">
+              {{ current_variant.compare_at_price | money }}
+            </span>
+          {% endif %}
+          <span>{{ current_variant.price | money }}</span>
+        </div>
+
+        {% if product.available %}
+          {% if product.has_only_default_variant %}
+            <form action="/cart/add" method="post">
+              <input type="hidden" name="id" value="{{ current_variant.id }}">
+              <button
+                type="submit"
+                class="ai-product-card-button-{{ ai_gen_id }} ai-product-card-button-available-{{ ai_gen_id }}"
+              >
+                {{ block.settings.add_to_cart_text }}
+              </button>
+            </form>
+          {% else %}
+            <a
+              href="{{ product.url }}"
+              class="ai-product-card-button-{{ ai_gen_id }} ai-product-card-button-available-{{ ai_gen_id }}"
+              style="display: block; text-decoration: none;"
+            >
+              {{ block.settings.select_options_text }}
+            </a>
+          {% endif %}
+        {% else %}
+          <button
+            disabled
+            class="ai-product-card-button-{{ ai_gen_id }} ai-product-card-button-soldout-{{ ai_gen_id }}"
+          >
+            {{ block.settings.sold_out_text }}
+          </button>
+        {% endif %}
+      </div>
+    </div>
+  {% else %}
+    <div class="ai-product-card-{{ ai_gen_id }}">
+      <div class="ai-product-card-image-wrapper-{{ ai_gen_id }}">
+        <div class="ai-product-card-placeholder-{{ ai_gen_id }}">
+          {{ 'product-1' | placeholder_svg_tag }}
+        </div>
+      </div>
+
+      <div class="ai-product-card-content-{{ ai_gen_id }}">
+        <h3 class="ai-product-card-title-{{ ai_gen_id }}">
+          Product title
+        </h3>
+
+        <div class="ai-product-card-price-{{ ai_gen_id }}">
+          $29.99
+        </div>
+
+        <button class="ai-product-card-button-{{ ai_gen_id }} ai-product-card-button-available-{{ ai_gen_id }}">
+          {{ block.settings.add_to_cart_text }}
+        </button>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Product card with button",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Display options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badges",
+      "label": "Show badges",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Button text"
+    },
+    {
+      "type": "text",
+      "id": "add_to_cart_text",
+      "label": "Add to cart text",
+      "default": "ADD TO CART"
+    },
+    {
+      "type": "text",
+      "id": "select_options_text",
+      "label": "Select options text",
+      "default": "SELECT OPTIONS"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_text",
+      "label": "Sold out text",
+      "default": "OUT OF STOCK"
+    },
+    {
+      "type": "header",
+      "content": "Card style"
+    },
+    {
+      "type": "color",
+      "id": "card_background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Padding",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Text style"
+    },
+    {
+      "type": "color",
+      "id": "vendor_color",
+      "label": "Vendor color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Price color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "price_size",
+      "label": "Price size",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "color",
+      "id": "button_background_color",
+      "label": "Background",
+      "default": "#ffd700"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Hover background",
+      "default": "#ffcc00"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Sold out button"
+    },
+    {
+      "type": "color",
+      "id": "soldout_button_color",
+      "label": "Background",
+      "default": "#cccccc"
+    },
+    {
+      "type": "color",
+      "id": "soldout_button_text_color",
+      "label": "Text color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Badges"
+    },
+    {
+      "type": "color",
+      "id": "sale_badge_color",
+      "label": "Sale badge",
+      "default": "#DF2E35"
+    },
+    {
+      "type": "color",
+      "id": "soldout_badge_color",
+      "label": "Sold out badge",
+      "default": "#666666"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product card with button"
+    }
+  ]
+}
+{% endschema %}
